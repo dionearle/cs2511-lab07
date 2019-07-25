@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
 class GameOfLifeTest {
 
     @Test
@@ -45,31 +48,31 @@ class GameOfLifeTest {
         assertTrue(gol.isAlive(9, 0));
     }
 
-//    @Test
-//    void testObservation() {
-//        GameOfLife gol = new GameOfLife();
-//
-//        gol.cellProperty(0, 0).addListener(new ChangeListener<Boolean>() {
-//
-//            @Override
-//            public void changed(ObservableValue<? extends Boolean> observable,
-//                    Boolean oldValue, Boolean newValue) {
-//                alive = newValue;
-//            }
-//
-//        });
-//
-//
-//        // In the next generation after this seed the cell at (0,0) should be
-//        // alive
-//        gol.ensureAlive(1, 0);
-//        gol.ensureAlive(1, 1);
-//        gol.ensureAlive(0, 1);
-//
-//        gol.tick();
-//
-//        assertTrue(alive);
-//    }
+    @Test
+    void testObservation() {
+        GameOfLife gol = new GameOfLife();
+
+        gol.cellProperty(0, 0).addListener(new ChangeListener<Boolean>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable,
+                    Boolean oldValue, Boolean newValue) {
+                alive = newValue;
+            }
+
+        });
+
+
+        // In the next generation after this seed the cell at (0,0) should be
+        // alive
+        gol.ensureAlive(1, 0);
+        gol.ensureAlive(1, 1);
+        gol.ensureAlive(0, 1);
+
+        gol.tick();
+
+        assertTrue(alive);
+    }
 
     // Used in the above test.
     private boolean alive = false;

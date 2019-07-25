@@ -3,6 +3,9 @@
  */
 package unsw.automata;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 /**
  * Conway's Game of Life on a 10x10 grid.
  *
@@ -11,22 +14,33 @@ package unsw.automata;
  */
 public class GameOfLife {
 	
-	boolean array[][];
+	BooleanProperty[][] array;
 
     public GameOfLife() {
-		array = new boolean[10][10];
+    	// initialising array of SimpleBooleanProperty objects
+		array = new BooleanProperty[10][10];
+		for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 10; col++) {
+                array[row][col] = new SimpleBooleanProperty();
+            }
+        }
     }
 
     public void ensureAlive(int x, int y) {
-    	array[x][y] = true;
+    	array[x][y].set(true);
     }
 
     public void ensureDead(int x, int y) {
-    	array[x][y] = false;
+    	array[x][y].set(false);
+    }
+    
+    public BooleanProperty cellProperty(int x, int y) {
+    	return BooleanProperty.booleanProperty(array[x][y]);
     }
 
     public boolean isAlive(int x, int y) {
-    	if (array[x][y] == true) {
+
+    	if (array[x][y].get() == true) {
     		return true;
     	} else {
     		return false;
@@ -35,15 +49,16 @@ public class GameOfLife {
     
     public void tick() {
 
-    	// determine number of rows and columns in board (10 x 10)
-        int rows = array.length;
-        int cols = array[0].length;
+    	// sets dimensions of board (10 x 10)
+        int rows = 10;
+        int cols = 10;
 
         // Create a copy of the board
-        boolean[][] copyBoard = new boolean[rows][cols];
+        BooleanProperty[][] copyBoard = new BooleanProperty[rows][cols];
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                copyBoard[row][col] = array[row][col];
+            	copyBoard[row][col] = new SimpleBooleanProperty();
+                copyBoard[row][col].set(array[row][col].get());
             }
         }
 
@@ -78,7 +93,7 @@ public class GameOfLife {
         					}
         					
         					// if this neighbour is alive, we add to the count of live neighbours
-        					if (copyBoard[a][b] == true) {
+        					if (copyBoard[a][b].get() == true) {
         						liveNeighbours++;
         					}
         					b++;
@@ -87,10 +102,10 @@ public class GameOfLife {
     			}
 
                 // Testing the rules to see whether we change the current cell's state
-                if ((copyBoard[row][col] == true) && (liveNeighbours < 2 || liveNeighbours > 3)) {
-                    array[row][col] = false;
-                } else if (copyBoard[row][col] == false && liveNeighbours == 3) {
-                    array[row][col] = true;
+                if ((copyBoard[row][col].get() == true) && (liveNeighbours < 2 || liveNeighbours > 3)) {
+                    array[row][col].set(false);
+                } else if (copyBoard[row][col].get() == false && liveNeighbours == 3) {
+                    array[row][col].set(true);
                 }
             }
         }
